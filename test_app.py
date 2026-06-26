@@ -11,8 +11,8 @@ def run_tests():
     tracker = BattleTracker(filepath=test_filepath)
 
     print("Testing save_record...")
-    tracker.save_record("Pikachu", "Charizard", "Win", "Used Thunderbolt")
-    tracker.save_record("Gengar", "Alakazam", "Loss", "Outsped")
+    tracker.save_record("Pikachu", "320", "Electric mouse")
+    tracker.save_record("Charizard", "534", "Fire flying dragon")
 
     assert os.path.exists(test_filepath), "File should be created"
 
@@ -21,14 +21,14 @@ def run_tests():
     assert len(all_records) == 2, f"Expected 2 records, got {len(all_records)}"
 
     print("Testing search_records with specific keyword...")
-    win_records = tracker.search_records("Win")
-    assert len(win_records) == 1, "Expected 1 record"
-    assert win_records[0]["my_pokemon"] == "Pikachu", "Expected Pikachu record"
+    electric_records = tracker.search_records("Electric")
+    assert len(electric_records) == 1, "Expected 1 record"
+    assert electric_records[0]["name"] == "Pikachu", "Expected Pikachu record"
 
     print("Testing search_records with case-insensitivity...")
     charizard_records = tracker.search_records("charizard")
     assert len(charizard_records) == 1, "Expected 1 record"
-    assert charizard_records[0]["opp_pokemon"] == "Charizard", "Expected Charizard record"
+    assert charizard_records[0]["base_stats"] == "534", "Expected base stats 534"
 
     # Cleanup after test
     if os.path.exists(test_filepath):
