@@ -466,6 +466,8 @@ class PokemonApp:
 
     def disable_edit_panel(self):
         self.selected_record_id = None
+
+        self.enable_edit_panel()
         self.edit_name_entry.delete(0, tk.END)
         for entry in self.edit_stat_entries.values():
             entry.delete(0, tk.END)
