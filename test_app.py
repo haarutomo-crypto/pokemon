@@ -10,32 +10,38 @@ def run_tests():
 
     tracker = BattleTracker(filepath=test_filepath)
 
-    print("Testing save_record with individual stats...")
-    # save_record(name, hp, attack, defense, sp_atk, sp_def, speed, notes)
-    tracker.save_record("Pikachu", "35", "55", "40", "50", "50", "90", "Electric mouse")
-    tracker.save_record("Charizard", "78", "84", "78", "109", "85", "100", "Fire flying dragon")
-    tracker.save_record("Snorlax", "160", "110", "65", "65", "110", "30", "Heavy sleeper")
+    print("Testing save_record with list notes...")
+    tracker.save_record("Pikachu", "35", "55", "40", "50", "50", "90", "First note\nSecond note\nThird note")
 
-    assert os.path.exists(test_filepath), "File should be created"
-
-    print("Testing search_records with empty keyword...")
     all_records = tracker.search_records("")
-    assert len(all_records) == 3, f"Expected 3 records, got {len(all_records)}"
+    assert len(all_records) == 1
+    pika_id = all_records[0]["id"]
 
-    print("Testing get_all_names for suggestions...")
-    names = tracker.get_all_names()
-    assert len(names) == 3, "Expected 3 unique names"
-    assert "Pikachu" in names
-    assert "Snorlax" in names
+    # Notes should be stored cleanly without numbers
+    assert len(all_records[0]["notes"]) == 3
+    assert all_records[0]["notes"][0] == "First note"
 
-    print("Testing data sorting simulation...")
-    all_records.sort(key=lambda x: x.get("speed", 0), reverse=True)
-    assert all_records[0]["name"] == "Charizard", "Expected Charizard to be fastest"
-    assert all_records[2]["name"] == "Snorlax", "Expected Snorlax to be slowest"
+    print("Testing format removal numbering...")
+    # Test that save_record correctly cleans existing numbers from user input
+    tracker.save_record("Charizard", "78", "84", "78", "109", "85", "100", "1. Fire\n2) Flying\n[3] Cool")
+    all_records = tracker.search_records("")
+    charizard = next(r for r in all_records if r["name"] == "Charizard")
+    assert charizard["notes"][0] == "Fire", "Expected '1. ' to be stripped"
+    assert charizard["notes"][1] == "Flying", "Expected '2) ' to be stripped"
+    assert charizard["notes"][2] == "Cool", "Expected '[3] ' to be stripped"
 
-    all_records.sort(key=lambda x: x.get("hp", 0), reverse=False)
-    assert all_records[0]["name"] == "Pikachu", "Expected Pikachu to have lowest HP"
-    assert all_records[2]["name"] == "Snorlax", "Expected Snorlax to have highest HP"
+    print("Testing update_record...")
+    tracker.update_record(pika_id, "Pikachu", "35", "55", "40", "50", "50", "90", "Updated note")
+    all_records = tracker.search_records("")
+    updated_pika = next(r for r in all_records if r["id"] == pika_id)
+    assert len(updated_pika["notes"]) == 1
+    assert updated_pika["notes"][0] == "Updated note"
+
+    print("Testing delete_record...")
+    tracker.delete_record(pika_id)
+    all_records = tracker.search_records("")
+    assert len(all_records) == 1
+    assert all_records[0]["name"] == "Charizard"
 
     # Cleanup after test
     if os.path.exists(test_filepath):
