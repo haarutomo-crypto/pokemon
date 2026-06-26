@@ -48,9 +48,10 @@ class BattleTracker:
             os.replace(temp_filepath, self.filepath)
 
     def _clean_numbering(self, notes_list):
-        # Remove manual numbering like "1.", "1)", "[1]" from notes
+        # Remove manual numbering like "1.", "1)", "[1] " from notes
         cleaned = []
-        pattern = re.compile(r'^(\[?\d+\]?[\.\)]?\s*)')
+        # Require a dot or parenthesis, OR brackets with a space, to avoid stripping "100% accuracy"
+        pattern = re.compile(r'^(\[?\d+\]?[\.\)]\s+|\[\d+\]\s+|\d+\.\s+)')
         for note in notes_list:
             cleaned.append(pattern.sub('', note).strip())
         return cleaned
@@ -371,7 +372,9 @@ class PokemonApp:
         self.edit_name_entry = tk.Entry(edit_inner, bg=self.accent_color, fg=self.fg_color, insertbackground=self.fg_color, font=self.normal_font, relief="flat")
         self.edit_name_entry.pack(fill="x", pady=(0, 10), ipady=3)
 
-        self.edit_stat_entries = self._create_stat_entries(edit_inner)
+        stats_inner_frame = tk.Frame(edit_inner, bg=self.bg_color)
+        stats_inner_frame.pack(fill="x")
+        self.edit_stat_entries = self._create_stat_entries(stats_inner_frame)
 
         tk.Label(edit_inner, text="備考:", bg=self.bg_color, fg=self.fg_color, font=self.bold_font).pack(anchor="w", pady=(10, 0))
         self.edit_notes_entry = tk.Text(edit_inner, height=8, bg=self.accent_color, fg=self.fg_color, insertbackground=self.fg_color, font=self.normal_font, relief="flat")
