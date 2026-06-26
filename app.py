@@ -188,7 +188,7 @@ class PokemonApp:
 
     def setup_data_tab(self):
         search_frame = tk.Frame(self.tab_data, bg=self.bg_color, padx=10, pady=10)
-        search_frame.pack(fill="x", zorder=1) # type: ignore
+        search_frame.pack(fill="x")
 
         tk.Label(search_frame, text="検索:", bg=self.bg_color, fg=self.fg_color, font=self.small_bold_font).grid(row=0, column=0, sticky="e")
 
@@ -219,7 +219,7 @@ class PokemonApp:
         self.show_all_btn.grid(row=0, column=6, padx=5)
 
         output_frame = tk.Frame(self.tab_data, bg=self.bg_color, padx=10, pady=10)
-        output_frame.pack(fill="both", expand=True, zorder=0) # type: ignore
+        output_frame.pack(fill="both", expand=True)
 
         self.text_panel = tk.Text(output_frame, height=20, width=80, bg=self.accent_color, fg=self.highlight_color, font=self.mono_font, relief="flat", insertbackground=self.fg_color)
         self.text_panel.pack(fill="both", expand=True)
