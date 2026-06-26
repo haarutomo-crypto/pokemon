@@ -179,9 +179,9 @@ class PokemonApp:
             entry.grid(row=i//2, column=(i%2)*2 + 1, pady=5, padx=5, ipady=2)
             self.stat_entries[stat] = entry
 
-        tk.Label(input_frame, text="備考:", bg=self.bg_color, fg=self.fg_color, font=self.bold_font).grid(row=2, column=0, sticky="e", pady=10)
-        self.notes_entry = tk.Entry(input_frame, width=40, bg=self.accent_color, fg=self.fg_color, insertbackground=self.fg_color, font=self.normal_font, relief="flat")
-        self.notes_entry.grid(row=2, column=1, columnspan=3, padx=10, pady=10, ipady=3, sticky="w")
+        tk.Label(input_frame, text="備考:", bg=self.bg_color, fg=self.fg_color, font=self.bold_font).grid(row=2, column=0, sticky="ne", pady=10)
+        self.notes_entry = tk.Text(input_frame, width=40, height=5, bg=self.accent_color, fg=self.fg_color, insertbackground=self.fg_color, font=self.normal_font, relief="flat")
+        self.notes_entry.grid(row=2, column=1, columnspan=3, padx=10, pady=10, sticky="w")
 
         self.save_btn = tk.Button(input_frame, text="保存", command=self.save_record, width=20, bg=self.highlight_color, fg="#000000", font=self.bold_font, relief="flat", activebackground="#3a9acc")
         self.save_btn.grid(row=3, column=0, columnspan=4, pady=20, ipady=5)
@@ -273,7 +273,7 @@ class PokemonApp:
         sp_atk = self.stat_entries["とくこう"].get().strip()
         sp_def = self.stat_entries["とくぼう"].get().strip()
         speed = self.stat_entries["すばやさ"].get().strip()
-        notes = self.notes_entry.get().strip()
+        notes = self.notes_entry.get("1.0", tk.END).strip()
 
         if not name:
             messagebox.showwarning("警告", "ポケモンのなまえを入力してください。")
@@ -285,7 +285,7 @@ class PokemonApp:
         self.name_entry.delete(0, tk.END)
         for entry in self.stat_entries.values():
             entry.delete(0, tk.END)
-        self.notes_entry.delete(0, tk.END)
+        self.notes_entry.delete("1.0", tk.END)
 
         messagebox.showinfo("成功", "データを保存しました。")
         self.show_all()
