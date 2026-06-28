@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポケモンデータ管理システム - BW Web Edition</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --fg-color: #ffffff;
+            --accent-color: #2a2a2a;
+            --highlight-color: #4db8ff;
+            --danger-color: #ff4d4d;
+            --hover-bg: #3a3a3a;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--fg-color);
+            font-family: 'Helvetica', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--highlight-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .tab-btn {
+            background-color: var(--bg-color);
+            color: var(--fg-color);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .tab-btn.active {
+            background-color: var(--highlight-color);
+            color: #000;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab-content {
+            display: none;
+            background-color: var(--bg-color);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 8px;
+            background-color: var(--accent-color);
+            color: var(--fg-color);
+            border: 1px solid #444;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--highlight-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            background-color: var(--accent-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid .form-group {
+            margin-bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .stats-grid label {
+            width: 80px;
+            margin-bottom: 0;
+        }
+
+        button {
+            background-color: var(--highlight-color);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        button.btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        /* Data List Layout */
+        .data-layout {
+            display: flex;
+            gap: 20px;
+            height: 600px;
+        }
+
+        .list-panel {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .edit-panel {
+            flex: 1;
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-y: auto;
+            border: 1px solid var(--accent-color);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        #suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--accent-color);
+            border: 1px solid #444;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--accent-color);
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background-color: var(--bg-color);
+            color: var(--fg-color);
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: var(--hover-bg);
+            cursor: pointer;
+        }
+
+        tr.selected {
+            background-color: var(--highlight-color);
+            color: #000;
+        }
+
+        .table-container {
+            overflow-y: auto;
+            flex-grow: 1;
+            border: 1px solid var(--accent-color);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>ポケモンデータ管理システム - BW Web Edition</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('input-tab')">入力</button>
+        <button class="tab-btn" onclick="switchTab('data-tab'); loadRecords();">データ一覧</button>
+    </div>
+
+    <!-- Input Tab -->
+    <div id="input-tab" class="tab-content active">
+        <form id="input-form" onsubmit="saveRecord(event)">
+            <div class="form-group">
+                <label>ポケモンのなまえ:</label>
+                <input type="text" id="in-name" required autocomplete="off">
+            </div>
+
+            <fieldset style="border: 1px solid var(--accent-color); border-radius: 5px; padding: 15px; margin-bottom: 15px;">
+                <legend style="padding: 0 10px; font-weight: bold;">種族値</legend>
+                <div class="stats-grid">
+                    <div class="form-group"><label>HP:</label><input type="number" id="in-hp" value="0"></div>
+                    <div class="form-group"><label>こうげき:</label><input type="number" id="in-atk" value="0"></div>
+                    <div class="form-group"><label>ぼうぎょ:</label><input type="number" id="in-def" value="0"></div>
+                    <div class="form-group"><label>とくこう:</label><input type="number" id="in-spa" value="0"></div>
+                    <div class="form-group"><label>とくぼう:</label><input type="number" id="in-spd" value="0"></div>
+                    <div class="form-group"><label>すばやさ:</label><input type="number" id="in-spe" value="0"></div>
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <label>備考 (改行でリスト化):</label>
+                <textarea id="in-notes" rows="5"></textarea>
+            </div>
+
+            <button type="submit">保存</button>
+        </form>
+    </div>
+
+    <!-- Data Tab -->
+    <div id="data-tab" class="tab-content">
+        <div class="data-layout">
+
+            <div class="list-panel">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="検索..." autocomplete="off" oninput="showSuggestions()">
+                    <div id="suggestions"></div>
+
+                    <button onclick="loadRecords()" style="width: auto;">検索</button>
+
+                    <select id="sort-select" onchange="loadRecords()" style="width: 150px;">
+                        <option value="none">並べ替え: なし</option>
+                        <option value="hp">HP</option>
+                        <option value="attack">こうげき</option>
+                        <option value="defense">ぼうぎょ</option>
+                        <option value="sp_atk">とくこう</option>
+                        <option value="sp_def">とくぼう</option>
+                        <option value="speed">すばやさ</option>
+                    </select>
+
+                    <button id="sort-order-btn" onclick="toggleSortOrder()" style="width: auto; background-color: var(--accent-color); color: white;">降順</button>
+                    <button onclick="document.getElementById('search-input').value=''; loadRecords();" style="width: auto; background-color: var(--accent-color); color: white;">すべて表示</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="records-table">
+                        <thead>
+                            <tr>
+                                <th>なまえ</th>
+                                <th>HP</th>
+                                <th>攻</th>
+                                <th>防</th>
+                                <th>特攻</th>
+                                <th>特防</th>
+                                <th>早</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="edit-panel" id="edit-panel">
+                <h3 style="margin-top:0; border-bottom:1px solid #444; padding-bottom:10px;">データ編集 (選択中)</h3>
+
+                <div id="edit-overlay" style="text-align: center; color: #888; margin-top: 50px;">
+                    左のリストからデータを選択してください
+                </div>
+
+                <form id="edit-form" class="hidden" onsubmit="updateRecord(event)">
+                    <input type="hidden" id="edit-id">
+                    <div class="form-group">
+                        <label>なまえ:</label>
+                        <input type="text" id="edit-name" required>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="form-group"><label>HP:</label><input type="number" id="edit-hp"></div>
+                        <div class="form-group"><label>攻:</label><input type="number" id="edit-atk"></div>
+                        <div class="form-group"><label>防:</label><input type="number" id="edit-def"></div>
+                        <div class="form-group"><label>特攻:</label><input type="number" id="edit-spa"></div>
+                        <div class="form-group"><label>特防:</label><input type="number" id="edit-spd"></div>
+                        <div class="form-group"><label>早:</label><input type="number" id="edit-spe"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>備考:</label>
+                        <textarea id="edit-notes" rows="6"></textarea>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit">更新</button>
+                        <button type="button" class="btn-danger" onclick="deleteRecord()">選択消去</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentRecords = [];
+        let sortDescending = true;
+        let suggestionTimeout = null;
+
+        // --- UI Interactions ---
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleSortOrder() {
+            sortDescending = !sortDescending;
+            document.getElementById('sort-order-btn').innerText = sortDescending ? "降順" : "昇順";
+            renderTable();
+        }
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target.id !== 'search-input' && e.target.id !== 'suggestions') {
+                document.getElementById('suggestions').style.display = 'none';
+            }
+        });
+
+        // --- API Calls ---
+
+        async function saveRecord(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('in-name').value,
+                hp: document.getElementById('in-hp').value,
+                attack: document.getElementById('in-atk').value,
+                defense: document.getElementById('in-def').value,
+                sp_atk: document.getElementById('in-spa').value,
+                sp_def: document.getElementById('in-spd').value,
+                speed: document.getElementById('in-spe').value,
+                notes: document.getElementById('in-notes').value
+            };
+
+            await fetch('/api/records', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            alert('データを保存しました。');
+            document.getElementById('input-form').reset();
+        }
+
+        async function loadRecords() {
+            const query = document.getElementById('search-input').value;
+            const res = await fetch(`/api/records?q=${encodeURIComponent(query)}`);
+            currentRecords = await res.json();
+            renderTable();
+            hideEditPanel();
+        }
+
+        async function updateRecord(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-id').value;
+            const data = {
+                name: document.getElementById('edit-name').value,
+                hp: document.getElementById('edit-hp').value,
+                attack: document.getElementById('edit-atk').value,
+                defense: document.getElementById('edit-def').value,
+                sp_atk: document.getElementById('edit-spa').value,
+                sp_def: document.getElementById('edit-spd').value,
+                speed: document.getElementById('edit-spe').value,
+                notes: document.getElementById('edit-notes').value
+            };
+
+            await fetch(`/api/records/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+
+            alert('データを更新しました。');
+            loadRecords();
+        }
+
+        async function deleteRecord() {
+            if (!confirm('選択したデータを消去しますか？\nこの操作は取り消せません。')) return;
+
+            const id = document.getElementById('edit-id').value;
+            await fetch(`/api/records/${id}`, { method: 'DELETE' });
+            loadRecords();
+        }
+
+        async function showSuggestions() {
+            clearTimeout(suggestionTimeout);
+            const query = document.getElementById('search-input').value.trim();
+            const box = document.getElementById('suggestions');
+
+            if (!query) {
+                box.style.display = 'none';
+                return;
+            }
+
+            suggestionTimeout = setTimeout(async () => {
+                const res = await fetch('/api/suggestions');
+                const allNames = await res.json();
+
+                const matches = allNames.filter(n => n.toLowerCase().includes(query.toLowerCase()));
+
+                box.innerHTML = '';
+                if (matches.length > 0) {
+                    matches.forEach(n => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+                        div.textContent = n;
+                        div.onclick = () => selectSuggestion(n);
+                        box.appendChild(div);
+                    });
+                    box.style.display = 'block';
+                } else {
+                    box.style.display = 'none';
+                }
+            }, 200);
+        }
+
+        function selectSuggestion(name) {
+            document.getElementById('search-input').value = name;
+            document.getElementById('suggestions').style.display = 'none';
+            loadRecords();
+        }
+
+        // --- Rendering ---
+
+        function renderTable() {
+            let records = [...currentRecords];
+            const sortKey = document.getElementById('sort-select').value;
+
+            if (sortKey !== 'none') {
+                records.sort((a, b) => {
+                    let valA = a[sortKey] || 0;
+                    let valB = b[sortKey] || 0;
+                    return sortDescending ? valB - valA : valA - valB;
+                });
+            }
+
+            const tbody = document.querySelector('#records-table tbody');
+            tbody.innerHTML = '';
+
+            records.forEach(rec => {
+                const tr = document.createElement('tr');
+                tr.onclick = () => selectRecord(rec.id, tr);
+
+                const columns = [rec.name, rec.hp, rec.attack, rec.defense, rec.sp_atk, rec.sp_def, rec.speed];
+                columns.forEach(val => {
+                    const td = document.createElement('td');
+                    td.textContent = val;
+                    tr.appendChild(td);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function selectRecord(id, trElement) {
+            document.querySelectorAll('#records-table tr').forEach(tr => tr.classList.remove('selected'));
+            trElement.classList.add('selected');
+
+            const rec = currentRecords.find(r => r.id === id);
+            if (!rec) return;
+
+            document.getElementById('edit-overlay').classList.add('hidden');
+            document.getElementById('edit-form').classList.remove('hidden');
+
+            document.getElementById('edit-id').value = rec.id;
+            document.getElementById('edit-name').value = rec.name;
+            document.getElementById('edit-hp').value = rec.hp;
+            document.getElementById('edit-atk').value = rec.attack;
+            document.getElementById('edit-def').value = rec.defense;
+            document.getElementById('edit-spa').value = rec.sp_atk;
+            document.getElementById('edit-spd').value = rec.sp_def;
+            document.getElementById('edit-spe').value = rec.speed;
+
+            // Format notes
+            const notesText = (rec.notes || []).map((n, i) => `${i+1}. ${n}`).join('\n');
+            document.getElementById('edit-notes').value = notesText;
+        }
+
+        function hideEditPanel() {
+            document.getElementById('edit-overlay').classList.remove('hidden');
+            document.getElementById('edit-form').classList.add('hidden');
+        }
+
+    </script>
+</body>
+</html>
