@@ -11,11 +11,14 @@ def run_tests():
     tracker = BattleTracker(filepath=test_filepath)
 
     print("Testing save_record with list notes...")
-    tracker.save_record("Pikachu", "35", "55", "40", "50", "50", "90", "First note\nSecond note\nThird note")
+    tracker.save_record("Pikachu", "せっかち", "35", "55", "40", "50", "50", "90", "4", "0", "0", "252", "0", "252", "First note\nSecond note\nThird note")
 
     all_records = tracker.search_records("")
     assert len(all_records) == 1
     pika_id = all_records[0]["id"]
+
+    assert all_records[0]["nature"] == "せっかち"
+    assert all_records[0]["ev_speed"] == 252
 
     # Notes should be stored cleanly without numbers
     assert len(all_records[0]["notes"]) == 3
@@ -23,7 +26,7 @@ def run_tests():
 
     print("Testing format removal numbering...")
     # Test that save_record correctly cleans existing numbers from user input
-    tracker.save_record("Charizard", "78", "84", "78", "109", "85", "100", "1. Fire\n2) Flying\n[3] Cool")
+    tracker.save_record("Charizard", "ひかえめ", "78", "84", "78", "109", "85", "100", "0", "0", "0", "252", "4", "252", "1. Fire\n2) Flying\n[3] Cool\n100% accuracy")
     all_records = tracker.search_records("")
     charizard = next(r for r in all_records if r["name"] == "Charizard")
     assert charizard["notes"][0] == "Fire", "Expected '1. ' to be stripped"
@@ -31,7 +34,7 @@ def run_tests():
     assert charizard["notes"][2] == "Cool", "Expected '[3] ' to be stripped"
 
     print("Testing update_record...")
-    tracker.update_record(pika_id, "Pikachu", "35", "55", "40", "50", "50", "90", "Updated note")
+    tracker.update_record(pika_id, "Pikachu", "おくびょう", "35", "55", "40", "50", "50", "90", "4", "0", "0", "252", "0", "252", "Updated note")
     all_records = tracker.search_records("")
     updated_pika = next(r for r in all_records if r["id"] == pika_id)
     assert len(updated_pika["notes"]) == 1

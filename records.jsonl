@@ -1,1 +1,2 @@
 {"id": "884de261-8889-4ba4-a4b9-879002532a47", "name": "Pikachu", "hp": 35, "attack": 55, "defense": 40, "sp_atk": 50, "sp_def": 50, "speed": 90, "notes": ["Electric mouse"]}
+{"id": "7454f5a1-46b3-48fd-9be4-08b89d147b84", "name": "Pikachu", "nature": "おくびょう", "hp": 35, "attack": 55, "defense": 40, "sp_atk": 50, "sp_def": 50, "speed": 90, "ev_hp": 4, "ev_attack": 0, "ev_defense": 0, "ev_sp_atk": 252, "ev_sp_def": 0, "ev_speed": 252, "notes": ["Electric mouse"]}

@@ -56,7 +56,7 @@ class BattleTracker:
             cleaned.append(pattern.sub('', note).strip())
         return cleaned
 
-    def save_record(self, name, hp, attack, defense, sp_atk, sp_def, speed, notes_text):
+    def save_record(self, name, nature="", hp=0, attack=0, defense=0, sp_atk=0, sp_def=0, speed=0, ev_hp=0, ev_attack=0, ev_defense=0, ev_sp_atk=0, ev_sp_def=0, ev_speed=0, notes_text=""):
         def to_int(val):
             try:
                 return int(val)
@@ -68,18 +68,25 @@ class BattleTracker:
         record = {
             "id": str(uuid.uuid4()),
             "name": name,
+            "nature": nature,
             "hp": to_int(hp),
             "attack": to_int(attack),
             "defense": to_int(defense),
             "sp_atk": to_int(sp_atk),
             "sp_def": to_int(sp_def),
             "speed": to_int(speed),
+            "ev_hp": to_int(ev_hp),
+            "ev_attack": to_int(ev_attack),
+            "ev_defense": to_int(ev_defense),
+            "ev_sp_atk": to_int(ev_sp_atk),
+            "ev_sp_def": to_int(ev_sp_def),
+            "ev_speed": to_int(ev_speed),
             "notes": self._clean_numbering(notes_list)
         }
         with open(self.filepath, "a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
-    def update_record(self, record_id, name, hp, attack, defense, sp_atk, sp_def, speed, notes_text):
+    def update_record(self, record_id, name, nature="", hp=0, attack=0, defense=0, sp_atk=0, sp_def=0, speed=0, ev_hp=0, ev_attack=0, ev_defense=0, ev_sp_atk=0, ev_sp_def=0, ev_speed=0, notes_text=""):
         def to_int(val):
             try:
                 return int(val)
@@ -91,12 +98,19 @@ class BattleTracker:
         updated_record = {
             "id": record_id,
             "name": name,
+            "nature": nature,
             "hp": to_int(hp),
             "attack": to_int(attack),
             "defense": to_int(defense),
             "sp_atk": to_int(sp_atk),
             "sp_def": to_int(sp_def),
             "speed": to_int(speed),
+            "ev_hp": to_int(ev_hp),
+            "ev_attack": to_int(ev_attack),
+            "ev_defense": to_int(ev_defense),
+            "ev_sp_atk": to_int(ev_sp_atk),
+            "ev_sp_def": to_int(ev_sp_def),
+            "ev_speed": to_int(ev_speed),
             "notes": self._clean_numbering(notes_list)
         }
 

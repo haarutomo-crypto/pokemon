@@ -241,6 +241,38 @@
                 <input type="text" id="in-name" required autocomplete="off">
             </div>
 
+            <div class="form-group">
+                <label>せいかく:</label>
+                <select id="in-nature">
+                    <option value="">-- 選択 --</option>
+                    <option value="さみしがり">さみしがり (Lonely)</option>
+                    <option value="いじっぱり">いじっぱり (Adamant)</option>
+                    <option value="やんちゃ">やんちゃ (Naughty)</option>
+                    <option value="ゆうかん">ゆうかん (Brave)</option>
+                    <option value="ずぶとい">ずぶとい (Bold)</option>
+                    <option value="わんぱく">わんぱく (Impish)</option>
+                    <option value="のんき">のんき (Lax)</option>
+                    <option value="のうてんき">のうてんき (Relaxed)</option>
+                    <option value="ひかえめ">ひかえめ (Modest)</option>
+                    <option value="おっとり">おっとり (Mild)</option>
+                    <option value="うっかりや">うっかりや (Rash)</option>
+                    <option value="れいせい">れいせい (Quiet)</option>
+                    <option value="おだやか">おだやか (Calm)</option>
+                    <option value="おとなしい">おとなしい (Gentle)</option>
+                    <option value="しんちょう">しんちょう (Careful)</option>
+                    <option value="なまいき">なまいき (Sassy)</option>
+                    <option value="おくびょう">おくびょう (Timid)</option>
+                    <option value="せっかち">せっかち (Hasty)</option>
+                    <option value="ようき">ようき (Jolly)</option>
+                    <option value="むじゃき">むじゃき (Naive)</option>
+                    <option value="てれや">てれや (Bashful)</option>
+                    <option value="がんばりや">がんばりや (Hardy)</option>
+                    <option value="すなお">すなお (Docile)</option>
+                    <option value="きまぐれ">きまぐれ (Quirky)</option>
+                    <option value="まじめ">まじめ (Serious)</option>
+                </select>
+            </div>
+
             <fieldset style="border: 1px solid var(--accent-color); border-radius: 5px; padding: 15px; margin-bottom: 15px;">
                 <legend style="padding: 0 10px; font-weight: bold;">種族値</legend>
                 <div class="stats-grid">
@@ -250,6 +282,18 @@
                     <div class="form-group"><label>とくこう:</label><input type="number" id="in-spa" value="0"></div>
                     <div class="form-group"><label>とくぼう:</label><input type="number" id="in-spd" value="0"></div>
                     <div class="form-group"><label>すばやさ:</label><input type="number" id="in-spe" value="0"></div>
+                </div>
+            </fieldset>
+
+            <fieldset style="border: 1px solid var(--accent-color); border-radius: 5px; padding: 15px; margin-bottom: 15px;">
+                <legend style="padding: 0 10px; font-weight: bold;">努力値</legend>
+                <div class="stats-grid">
+                    <div class="form-group"><label>HP:</label><input type="number" id="in-ev-hp" value="0" min="0" max="252"></div>
+                    <div class="form-group"><label>こうげき:</label><input type="number" id="in-ev-atk" value="0" min="0" max="252"></div>
+                    <div class="form-group"><label>ぼうぎょ:</label><input type="number" id="in-ev-def" value="0" min="0" max="252"></div>
+                    <div class="form-group"><label>とくこう:</label><input type="number" id="in-ev-spa" value="0" min="0" max="252"></div>
+                    <div class="form-group"><label>とくぼう:</label><input type="number" id="in-ev-spd" value="0" min="0" max="252"></div>
+                    <div class="form-group"><label>すばやさ:</label><input type="number" id="in-ev-spe" value="0" min="0" max="252"></div>
                 </div>
             </fieldset>
 
@@ -292,6 +336,7 @@
                         <thead>
                             <tr>
                                 <th>なまえ</th>
+                                <th>せいかく</th>
                                 <th>HP</th>
                                 <th>攻</th>
                                 <th>防</th>
@@ -321,6 +366,39 @@
                         <input type="text" id="edit-name" required>
                     </div>
 
+                    <div class="form-group">
+                        <label>せいかく:</label>
+                        <select id="edit-nature">
+                            <option value="">-- 選択 --</option>
+                            <option value="さみしがり">さみしがり (Lonely)</option>
+                            <option value="いじっぱり">いじっぱり (Adamant)</option>
+                            <option value="やんちゃ">やんちゃ (Naughty)</option>
+                            <option value="ゆうかん">ゆうかん (Brave)</option>
+                            <option value="ずぶとい">ずぶとい (Bold)</option>
+                            <option value="わんぱく">わんぱく (Impish)</option>
+                            <option value="のんき">のんき (Lax)</option>
+                            <option value="のうてんき">のうてんき (Relaxed)</option>
+                            <option value="ひかえめ">ひかえめ (Modest)</option>
+                            <option value="おっとり">おっとり (Mild)</option>
+                            <option value="うっかりや">うっかりや (Rash)</option>
+                            <option value="れいせい">れいせい (Quiet)</option>
+                            <option value="おだやか">おだやか (Calm)</option>
+                            <option value="おとなしい">おとなしい (Gentle)</option>
+                            <option value="しんちょう">しんちょう (Careful)</option>
+                            <option value="なまいき">なまいき (Sassy)</option>
+                            <option value="おくびょう">おくびょう (Timid)</option>
+                            <option value="せっかち">せっかち (Hasty)</option>
+                            <option value="ようき">ようき (Jolly)</option>
+                            <option value="むじゃき">むじゃき (Naive)</option>
+                            <option value="てれや">てれや (Bashful)</option>
+                            <option value="がんばりや">がんばりや (Hardy)</option>
+                            <option value="すなお">すなお (Docile)</option>
+                            <option value="きまぐれ">きまぐれ (Quirky)</option>
+                            <option value="まじめ">まじめ (Serious)</option>
+                        </select>
+                    </div>
+
+                    <div style="font-weight: bold; margin-bottom: 5px;">種族値</div>
                     <div class="stats-grid">
                         <div class="form-group"><label>HP:</label><input type="number" id="edit-hp"></div>
                         <div class="form-group"><label>攻:</label><input type="number" id="edit-atk"></div>
@@ -328,6 +406,16 @@
                         <div class="form-group"><label>特攻:</label><input type="number" id="edit-spa"></div>
                         <div class="form-group"><label>特防:</label><input type="number" id="edit-spd"></div>
                         <div class="form-group"><label>早:</label><input type="number" id="edit-spe"></div>
+                    </div>
+
+                    <div style="font-weight: bold; margin-bottom: 5px;">努力値</div>
+                    <div class="stats-grid">
+                        <div class="form-group"><label>HP:</label><input type="number" id="edit-ev-hp" min="0" max="252"></div>
+                        <div class="form-group"><label>攻:</label><input type="number" id="edit-ev-atk" min="0" max="252"></div>
+                        <div class="form-group"><label>防:</label><input type="number" id="edit-ev-def" min="0" max="252"></div>
+                        <div class="form-group"><label>特攻:</label><input type="number" id="edit-ev-spa" min="0" max="252"></div>
+                        <div class="form-group"><label>特防:</label><input type="number" id="edit-ev-spd" min="0" max="252"></div>
+                        <div class="form-group"><label>早:</label><input type="number" id="edit-ev-spe" min="0" max="252"></div>
                     </div>
 
                     <div class="form-group">
@@ -379,12 +467,19 @@
             e.preventDefault();
             const data = {
                 name: document.getElementById('in-name').value,
+                nature: document.getElementById('in-nature').value,
                 hp: document.getElementById('in-hp').value,
                 attack: document.getElementById('in-atk').value,
                 defense: document.getElementById('in-def').value,
                 sp_atk: document.getElementById('in-spa').value,
                 sp_def: document.getElementById('in-spd').value,
                 speed: document.getElementById('in-spe').value,
+                ev_hp: document.getElementById('in-ev-hp').value,
+                ev_attack: document.getElementById('in-ev-atk').value,
+                ev_defense: document.getElementById('in-ev-def').value,
+                ev_sp_atk: document.getElementById('in-ev-spa').value,
+                ev_sp_def: document.getElementById('in-ev-spd').value,
+                ev_speed: document.getElementById('in-ev-spe').value,
                 notes: document.getElementById('in-notes').value
             };
 
@@ -411,12 +506,19 @@
             const id = document.getElementById('edit-id').value;
             const data = {
                 name: document.getElementById('edit-name').value,
+                nature: document.getElementById('edit-nature').value,
                 hp: document.getElementById('edit-hp').value,
                 attack: document.getElementById('edit-atk').value,
                 defense: document.getElementById('edit-def').value,
                 sp_atk: document.getElementById('edit-spa').value,
                 sp_def: document.getElementById('edit-spd').value,
                 speed: document.getElementById('edit-spe').value,
+                ev_hp: document.getElementById('edit-ev-hp').value,
+                ev_attack: document.getElementById('edit-ev-atk').value,
+                ev_defense: document.getElementById('edit-ev-def').value,
+                ev_sp_atk: document.getElementById('edit-ev-spa').value,
+                ev_sp_def: document.getElementById('edit-ev-spd').value,
+                ev_speed: document.getElementById('edit-ev-spe').value,
                 notes: document.getElementById('edit-notes').value
             };
 
@@ -497,7 +599,7 @@
                 const tr = document.createElement('tr');
                 tr.onclick = () => selectRecord(rec.id, tr);
 
-                const columns = [rec.name, rec.hp, rec.attack, rec.defense, rec.sp_atk, rec.sp_def, rec.speed];
+                const columns = [rec.name, rec.nature || '', rec.hp, rec.attack, rec.defense, rec.sp_atk, rec.sp_def, rec.speed];
                 columns.forEach(val => {
                     const td = document.createElement('td');
                     td.textContent = val;
@@ -520,12 +622,20 @@
 
             document.getElementById('edit-id').value = rec.id;
             document.getElementById('edit-name').value = rec.name;
+            document.getElementById('edit-nature').value = rec.nature || '';
             document.getElementById('edit-hp').value = rec.hp;
             document.getElementById('edit-atk').value = rec.attack;
             document.getElementById('edit-def').value = rec.defense;
             document.getElementById('edit-spa').value = rec.sp_atk;
             document.getElementById('edit-spd').value = rec.sp_def;
             document.getElementById('edit-spe').value = rec.speed;
+
+            document.getElementById('edit-ev-hp').value = rec.ev_hp || 0;
+            document.getElementById('edit-ev-atk').value = rec.ev_attack || 0;
+            document.getElementById('edit-ev-def').value = rec.ev_defense || 0;
+            document.getElementById('edit-ev-spa').value = rec.ev_sp_atk || 0;
+            document.getElementById('edit-ev-spd').value = rec.ev_sp_def || 0;
+            document.getElementById('edit-ev-spe').value = rec.ev_speed || 0;
 
             // Format notes
             const notesText = (rec.notes || []).map((n, i) => `${i+1}. ${n}`).join('\n');
